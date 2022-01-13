@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <title>Lab2</title>
+</head>
+<body>
+<div class="content">
+    <div class="data">
+        <div class="input-data">
+            <span id="description">Expel all students of the group</span>
+            <div>
+                <label for="group-id">Group Id</label>
+                <input type="text" id="group-id" name="studentsCount" pattern="[1-9][0-9]*" required>
+            </div>
+            <div>
+                <label for="_form-of-education">Form Of Education:</label>
+                <select id="_form-of-education" disabled>
+                    <option value="" selected></option>
+                    <option value="DISTANCE_EDUCATION">Distance Education</option>
+                    <option value="FULL_TIME_EDUCATION">Full Time Education</option>
+                    <option value="EVENING_CLASSES">Evening Classes</option>
+                </select>
+                <input type="hidden" id="form-of-education" name="formOfEducation" value="">
+            </div>
+        </div>
+        <div class="error-info">
+
+        </div>
+    </div>
+    <div class="commands">
+        <div class="rofl">
+            <input type="radio" name="command" id="command1" value="post" class="command" checked>
+            <input type="radio" name="command" id="command2" value="put" class="command">
+        </div>
+    </div>
+    <div class="submit">
+        <input type="button" value="Submit" id="submit">
+        <img id="indicator" src="img/loading.gif" alt="Loading...">
+    </div>
+    <div class="result">
+        <div class="result-text" hidden>
+
+        </div>
+    </div>
+</div>
+<script>
+    let currentCommand = "post";
+    const baseURL = window.location.origin + "/Lab2/group";
+
+    $('._form-of-education').on('change', () => console.log(baseURL))
+
+    $('.command').on('click', function () {
+        currentCommand = $(this).val();
+        $('#description').empty();
+        resetInputs();
+        clearResultData();
+
+        if (currentCommand === "post") {
+            $('#_form-of-education').attr("disabled", true);
+            $('#description').text("Expel all students of the group");
+
+        } else {
+            $('#_form-of-education').attr("disabled", false);
+            $('#description').text("Change target group form of education");
+        }
+    })
+
+    $('#submit').on('click', () => {
+        const method = currentCommand;
+        const groupId = $('#group-id').val();
+        const formOfEducation = $('#_form-of-education').val();
+
+        clearResultData();
+
+        $('#indicator').css('visibility', 'visible');
+        $.ajax({
+            url: baseURL + `/${groupId}` + (method === "post" ? "/expel-all" : `/change-edu-form/${formOfEducation}`),
+            method: method,
+            contentType: 'text/xml;charset=utf-8',
+            success: function (data){
+                $('#indicator').css('visibility', 'hidden');
+                const result = $(data).find('responseText');
+                $('.result-text').append(`<span>${result.text()}</span>`).show();
+            },
+            error: function (error){
+                $('#indicator').css('visibility', 'hidden');
+                $('.error-info').append(`<p>Error information</p>`);
+                try{
+                    const xmlError = $($.parseXML(error.responseText));
+
+                    if ($(xmlError).find('error').length === 0){
+                        $('.error-info').append(`<span class="error">Unexpected Error with status ${error.status}! See network details.</span>`);
+                        return;
+                    }
+
+                    $(xmlError).find('error').each(function (){
+                        $('.error-info').append(`<span class="error">${$(this).text()}</span>`);
+                    });
+
+                } catch (e) {
+                    $('.error-info').append(`<span class="error">Unexpected Error! See network details.</span>`);
+                }
+            }
+        });
+    })
+
+    function clearResultData(){
+        $('.error-info').empty();
+        $('.result-text').empty().hide();
+    }
+
+    function resetInputs(){
+        $('.input-data input[type=text]').val('');
+    }
+</script>
+</body>
+</html>
