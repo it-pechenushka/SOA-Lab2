@@ -20,7 +20,7 @@ public class ExpelService {
 
     @SneakyThrows
     public void expelStudents(long groupId) {
-        Response response = client.target(ClientFactoryBuilder.getStorageServiceUrl() + "/" + groupId)
+        Response response = client.target(ClientFactoryBuilder.getStorageServiceUrl() + "/Lab1/base/groups/" + groupId)
                 .request(MediaType.TEXT_XML)
                 .get();
 

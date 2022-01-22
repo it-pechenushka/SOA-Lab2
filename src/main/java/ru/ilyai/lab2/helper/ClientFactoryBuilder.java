@@ -25,6 +25,6 @@ public class ClientFactoryBuilder {
     }
 
     public static String getStorageServiceUrl() {
-        return "https://localhost:8443/Lab1/base/groups";
+        return System.getProperty("SERVICE_URL");
     }
 }

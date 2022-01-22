@@ -24,7 +24,7 @@ public class EduService {
         StudyGroupDto studyGroup = new StudyGroupDto();
         studyGroup.setFormOfEducation(formOfEducation);
 
-        Response response = client.target(ClientFactoryBuilder.getStorageServiceUrl() + "/" + groupId)
+        Response response = client.target(ClientFactoryBuilder.getStorageServiceUrl() + "/Lab1/base/groups/" + groupId)
                 .request(MediaType.TEXT_XML)
                 .put(Entity.entity(studyGroup, MediaType.TEXT_XML));
 
