@@ -5,8 +5,10 @@ import ru.ilyai.lab2.exception.ConvertException;
 import ru.ilyai.lab2.helper.ResponseBuilder;
 import ru.ilyai.lab2.model.FormOfEducation;
 import ru.ilyai.lab2.service.EduService;
+import ru.ilyai.lab2.service.EjbService;
 import ru.ilyai.lab2.service.ExpelService;
 
+import javax.naming.NamingException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
@@ -14,12 +16,12 @@ import javax.ws.rs.core.Response;
 public class BaseController {
     @PathParam("group-id")
     private long groupId;
-    private EduService eduService;
-    private ExpelService expelService;
+    private final EduService eduService;
+    private final ExpelService expelService;
 
-    public BaseController(){
-        eduService = new EduService();
-        expelService = new ExpelService();
+    public BaseController() throws NamingException {
+        eduService = (EduService) EjbService.getServiceFromEjb("java:global/EJB/EduServiceImpl");
+        expelService = (ExpelService) EjbService.getServiceFromEjb("java:global/EJB/ExpelServiceImpl");
     }
 
     @POST

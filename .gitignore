@@ -1,2 +1,2 @@
-target/*
-Lab2.iml
+target/**
+run.txt

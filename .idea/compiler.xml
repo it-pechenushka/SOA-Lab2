@@ -11,6 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ejb" target="8" />
       <module name="Lab2" target="1.8" />
     </bytecodeTargetLevel>
   </component>
